@@ -8,9 +8,13 @@
 Example which takes 10 latest order books:
 `.\MetaExchange.exe 10` 
 
-2. **WebAPI**: HTTP POST request with payload, which contains the type of exchange (buy or sell), amount of BTC to buy or sell and user balances (in EUR and BTC).
+2. **WebAPI**: HTTP POST request with payload, which contains the type of exchange (buy or sell), amount of BTC to buy or sell and user balances (in EUR and BTC). This implementation will find an optimal solution across the whole dataset of orderbooks (combinations of orderbooks are possible).
 
-Example postman collection is appended in `.\Data\PostmanCollections` 
+Example postman collection is appended in `.\Data\PostmanCollections`. 
+
+To run in this mode, do not append argument when running the program. Example:
+
+`.\MetaExchange.exe` 
 
 ## TODOs
 
