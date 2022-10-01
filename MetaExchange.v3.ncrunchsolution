@@ -1,0 +1,10 @@
+﻿<SolutionConfiguration>
+  <Settings>
+    <AllowParallelTestExecution>True</AllowParallelTestExecution>
+    <MetricsExclusionList>
+      <Value>Startup.cs:MetaExchange\MetaExchange.csproj</Value>
+      <Value>Program.cs:MetaExchange\MetaExchange.csproj</Value>
+    </MetricsExclusionList>
+    <SolutionConfigured>True</SolutionConfigured>
+  </Settings>
+</SolutionConfiguration>
