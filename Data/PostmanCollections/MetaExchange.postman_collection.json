@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "2a1d32cc-6a56-488e-8d90-fa100ee59fd9",
+		"name": "MetaExchange",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Buy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"type\": \"buy\",\r\n\t\"amount\": 2,\r\n    \"balanceEur\": 100000,\r\n    \"balanceBtc\": 17\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/exchange",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"exchange"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sell",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"type\": \"sell\",\r\n\t\"amount\": 2,\r\n    \"balanceEur\": 100000,\r\n    \"balanceBtc\": 17\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/exchange",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"exchange"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
