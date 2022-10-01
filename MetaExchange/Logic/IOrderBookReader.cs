@@ -6,6 +6,6 @@ namespace MetaExchange.Logic
     {
         Task<IList<OrderBook>> ReadOrderBook(string path);
 
-        IList<OrderBook> ReadOrderBook(string path, int numberOfOrderBooks);
+        IList<OrderBook> ReadNumberOfOrderBooks(string path, int numberOfOrderBooks);
     }
 }

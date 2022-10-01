@@ -65,6 +65,24 @@ namespace MetaExchange.Tests.DataSource
             result.Should().BeEmpty();
             VerifyOutputWriterCalled();
         }
+
+        [Fact]
+        public async Task GetLastNumberOfOrderBooks_Existing_TakesLastOneFromCache()
+        {
+            await Sut.Init();
+
+            IList<OrderBook> result = Sut.GetLastNumberOfOrderBooks(1);
+
+            result.Should().BeEquivalentTo(new List<OrderBook> { ExpectedOrderBooks[1] });
+        }
+
+        [Fact]
+        public void GetLastNumberOfOrderBooks_NoBooksInCache_TakesFromStorage()
+        {
+            IList<OrderBook> result = Sut.GetLastNumberOfOrderBooks(2);
+
+            result.Should().BeEquivalentTo(ExpectedOrderBooks);
+        }
     }
 
     public class MetaExchangeDataSourceDriver
@@ -75,6 +93,7 @@ namespace MetaExchange.Tests.DataSource
 
         public IList<Bid> ExpectedBids { get; }
         public IList<Ask> ExpectedAsks { get; }
+        public IList<OrderBook> ExpectedOrderBooks { get; }
 
         public IMetaExchangeDataSource Sut { get; }
 
@@ -92,7 +111,7 @@ namespace MetaExchange.Tests.DataSource
             Ask ask3 = new() { Order = new Order { Price = 30, Amount = 1 } };
             Ask ask4 = new() { Order = new Order { Price = 20, Amount = 10 } };
 
-            IList<OrderBook> orderBooks = new List<OrderBook>
+            ExpectedOrderBooks = new List<OrderBook>
             {
                 new OrderBook("2022-01-01T00:00:00", new List<Bid> { bid1, bid2 }, new List<Ask> { ask1, ask2 } ),
                 new OrderBook("2022-01-02T00:00:00", new List<Bid> { bid3, bid4 }, new List<Ask> { ask3, ask4 } )
@@ -100,8 +119,10 @@ namespace MetaExchange.Tests.DataSource
 
             _orderBookReader = new Mock<IOrderBookReader>();
             _orderBookReader.SetupSequence(i => i.ReadOrderBook(_orderBookPath))
-                            .ReturnsAsync(orderBooks)
+                            .ReturnsAsync(ExpectedOrderBooks)
                             .ReturnsAsync(new List<OrderBook>());
+
+            _orderBookReader.Setup(i => i.ReadNumberOfOrderBooks(_orderBookPath, 2)).Returns(ExpectedOrderBooks);
 
             _outputWriter = new Mock<IOutputWriter>();
 

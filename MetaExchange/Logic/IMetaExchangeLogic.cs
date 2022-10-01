@@ -8,6 +8,6 @@ namespace MetaExchange.Logic
 
         Task<IExchangeResult> SellOptimal(IUserOrder userOrder);
 
-        void FindOptimalSequencePerExchange(IList<OrderBook> orderBooks);
+        void FindOptimalSequencePerExchange(int numberOfOrderBooks);
     }
 }

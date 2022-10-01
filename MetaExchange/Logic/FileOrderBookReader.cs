@@ -14,7 +14,7 @@ namespace MetaExchange.Logic
             return orders;
         }
 
-        public IList<OrderBook> ReadOrderBook(string path, int numberOfOrderBooks)
+        public IList<OrderBook> ReadNumberOfOrderBooks(string path, int numberOfOrderBooks)
         {
             IList<string> lines = File.ReadLines(path).Take(numberOfOrderBooks).ToList();
 
@@ -31,14 +31,7 @@ namespace MetaExchange.Logic
                 string orderStr = "{" + line.Split(new[] { '{' }, 2).Last();
 
                 OrderBook orderBook = JsonConvert.DeserializeObject<OrderBook>(orderStr);
-                if (orderBook != null)
-                {
-                    orderBooks.Add(orderBook);
-                }
-                else
-                {
-                    //log!!!
-                }
+                orderBooks.Add(orderBook);
             }
 
             return orderBooks;

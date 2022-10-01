@@ -27,7 +27,7 @@ namespace MetaExchange.Tests.Logic
         [Fact]
         public void FindOptimalSequencePerExchange_TwoOrderBooks_ProcessTwoBooks()
         {
-            Sut.FindOptimalSequencePerExchange(OrderBooks);
+            Sut.FindOptimalSequencePerExchange(NumberOfOrderBooks);
 
             VerifyInitialValuesOutput();
             VerifyResultOutput();
@@ -51,12 +51,13 @@ namespace MetaExchange.Tests.Logic
         public IExchangeResult ExpectedBuyResult { get; }
         public IExchangeResult ExpectedSellResult { get; }
 
-        public IList<OrderBook> OrderBooks { get; }
+        public int NumberOfOrderBooks { get; }
 
         public IMetaExchangeLogic Sut { get; }
 
         public MetaExchangeLogicDriver()
         {
+            NumberOfOrderBooks = 2;
             BuyOrder = Mock.Of<IUserOrder>(i => i.Amount == 10 && i.BalanceEur == 1000);
             SellOrder = Mock.Of<IUserOrder>(i => i.Amount == 20 && i.BalanceBTC == 2000);
             ExpectedBuyResult = Mock.Of<IExchangeResult>();
@@ -78,11 +79,13 @@ namespace MetaExchange.Tests.Logic
             List<Bid> bids2 = new() { new Bid(), new Bid() };
             List<Ask> asks1 = new() { new Ask(), new Ask() };
             List<Ask> asks2 = new() { new Ask(), new Ask() };
-            OrderBooks = new List<OrderBook>
+            IList<OrderBook> orderBooks = new List<OrderBook>
             {
                 new OrderBook("2022-01-01T00:00:00", bids1, asks1),
                 new OrderBook("2022-01-01T00:00:00", bids2, asks2)
             };
+
+            _dataSource.Setup(i => i.GetLastNumberOfOrderBooks(NumberOfOrderBooks)).Returns(orderBooks);
 
             _buyResult1 = Mock.Of<IExchangeResult>();
             _buyResult2 = Mock.Of<IExchangeResult>();

@@ -28,7 +28,6 @@ namespace MetaExchange
         public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
-            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

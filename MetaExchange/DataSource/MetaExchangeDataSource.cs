@@ -5,6 +5,7 @@ namespace MetaExchange.DataSource
 {
     public class MetaExchangeDataSource : IMetaExchangeDataSource
     {
+        private IList<OrderBook> _orderBooks = new List<OrderBook>();
         private IList<Ask> _asks = new List<Ask>();
         private IList<Bid> _bids = new List<Bid>();
 
@@ -23,14 +24,14 @@ namespace MetaExchange.DataSource
         {
             try
             {
-                IList<OrderBook> data = await _orderBookReader.ReadOrderBook(_orderBookPath);
+                _orderBooks = await _orderBookReader.ReadOrderBook(_orderBookPath);
 
-                _asks = data.SelectMany(i => i.Asks)
+                _asks = _orderBooks.SelectMany(i => i.Asks)
                     .OrderBy(i => i.Order.Price)
                     .ThenByDescending(i => i.Order.Amount)
                     .ToList();
 
-                _bids = data.SelectMany(i => i.Bids)
+                _bids = _orderBooks.SelectMany(i => i.Bids)
                     .OrderByDescending(i => i.Order.Price)
                     .ThenByDescending(i => i.Order.Amount)
                     .ToList();
@@ -39,6 +40,16 @@ namespace MetaExchange.DataSource
             {
                 _outputWriter.OutputString($"Error occured while retrieving order book data. Exception message: {ex.Message}");
             }
+        }
+
+        public IList<OrderBook> GetLastNumberOfOrderBooks(int numberOfBooks)
+        {
+            if (_orderBooks.Any())
+            {
+                return _orderBooks.TakeLast(numberOfBooks).ToList();
+            }
+
+            return _orderBookReader.ReadNumberOfOrderBooks(_orderBookPath, numberOfBooks);
         }
 
         public async Task<IList<Bid>> GetOrderedBuyers()

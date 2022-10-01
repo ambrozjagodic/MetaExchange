@@ -34,8 +34,10 @@ namespace MetaExchange.Logic
             return exchangeResult;
         }
 
-        public void FindOptimalSequencePerExchange(IList<OrderBook> orderBooks)
+        public void FindOptimalSequencePerExchange(int numberOfOrderBooks)
         {
+            IList<OrderBook> orderBooks = _dataSource.GetLastNumberOfOrderBooks(numberOfOrderBooks);
+
             Random random = new();
 
             foreach (OrderBook orderBook in orderBooks)
