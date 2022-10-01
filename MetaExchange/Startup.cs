@@ -20,6 +20,7 @@ namespace MetaExchange
 
             services.AddSingleton<IMetaExchangeLogic, MetaExchangeLogic>();
             services.AddSingleton<ISequenceFinder, SequenceFinder>();
+            services.AddSingleton<IOutputWriter, ConsoleWriter>();
             services.AddSingleton<IWebAPIRequestValidation, WebAPIRequestValidation>();
             services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new ConsoleWriter(), path));
         }
