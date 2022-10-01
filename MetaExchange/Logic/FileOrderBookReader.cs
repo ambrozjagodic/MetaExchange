@@ -9,21 +9,7 @@ namespace MetaExchange.Logic
         {
             IList<string> lines = await File.ReadAllLinesAsync(path);
 
-            IList<OrderBook> orders = new List<OrderBook>();
-            foreach (string line in lines)
-            {
-                string orderStr = "{" + line.Split(new[] { '{' }, 2).Last();
-
-                OrderBook orderBook = JsonConvert.DeserializeObject<OrderBook>(orderStr);
-                if (orderBook != null)
-                {
-                    orders.Add(orderBook);
-                }
-                else
-                {
-                    //log!!!
-                }
-            }
+            IList<OrderBook> orders = ParseLines(lines);
 
             return orders;
         }
@@ -32,7 +18,14 @@ namespace MetaExchange.Logic
         {
             IList<string> lines = File.ReadLines(path).Take(numberOfOrderBooks).ToList();
 
-            IList<OrderBook> orders = new List<OrderBook>();
+            IList<OrderBook> orders = ParseLines(lines);
+
+            return orders;
+        }
+
+        private static IList<OrderBook> ParseLines(IList<string> lines)
+        {
+            IList<OrderBook> orderBooks = new List<OrderBook>();
             foreach (string line in lines)
             {
                 string orderStr = "{" + line.Split(new[] { '{' }, 2).Last();
@@ -40,7 +33,7 @@ namespace MetaExchange.Logic
                 OrderBook orderBook = JsonConvert.DeserializeObject<OrderBook>(orderStr);
                 if (orderBook != null)
                 {
-                    orders.Add(orderBook);
+                    orderBooks.Add(orderBook);
                 }
                 else
                 {
@@ -48,7 +41,7 @@ namespace MetaExchange.Logic
                 }
             }
 
-            return orders;
+            return orderBooks;
         }
     }
 }

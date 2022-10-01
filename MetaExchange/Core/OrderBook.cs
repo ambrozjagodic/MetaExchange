@@ -1,6 +1,5 @@
 ﻿namespace MetaExchange.Core
 {
-    [Serializable]
     public class OrderBook
     {
         public OrderBook(string acqTime, List<Bid> bids, List<Ask> asks)

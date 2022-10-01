@@ -1,6 +1,8 @@
-﻿namespace MetaExchange.Core
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace MetaExchange.Core
 {
-    [Serializable]
+    [ExcludeFromCodeCoverage]
     public class Order
     {
         public Guid? Id { get; set; }
