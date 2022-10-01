@@ -5,14 +5,14 @@ namespace MetaExchange.Logic
 {
     public class MetaExchangeLogic : IMetaExchangeLogic
     {
-        private const string BUDGET_EXCEEDED_ERROR_MSG = "Budget exceeded.";
-        private const string NOT_ENOUGH_BTC_TO_BUY = "Not enough BTC to buy.";
-        private const string NOT_ENOUGH_BUYERS = "Not enough BTC buyers.";
-
+        private readonly ISequenceFinder _sequenceFinder;
+        private readonly IOutputWriter _outputWriter;
         private readonly IMetaExchangeDataSource _dataSource;
 
-        public MetaExchangeLogic(IMetaExchangeDataSource dataSource)
+        public MetaExchangeLogic(ISequenceFinder sequenceFinder, IOutputWriter outputWriter, IMetaExchangeDataSource dataSource)
         {
+            _sequenceFinder = sequenceFinder;
+            _outputWriter = outputWriter;
             _dataSource = dataSource;
         }
 
@@ -20,94 +20,37 @@ namespace MetaExchange.Logic
         {
             IList<Ask> sellers = await _dataSource.GetOrderedSellers();
 
-            IList<IOrderResult> results = new List<IOrderResult>();
+            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalBuySequence(userOrder.Amount, userOrder.BalanceEur, sellers);
 
-            bool budgetExceeded = false;
-            int index = 0;
-            decimal amountLeftToBuy = userOrder.Amount;
-            decimal currentPrice = 0;
-            while (amountLeftToBuy != 0 && !budgetExceeded && index < sellers.Count)
-            {
-                Ask currentSeller = sellers[index];
-
-                if (amountLeftToBuy <= currentSeller.Order.Amount)
-                {
-                    IOrderResult newOrder = new OrderResult(amountLeftToBuy, currentSeller);
-                    results.Add(newOrder);
-
-                    currentPrice += amountLeftToBuy * currentSeller.Order.Price;
-
-                    amountLeftToBuy = 0;
-                }
-                else
-                {
-                    IOrderResult newOrder = new OrderResult(currentSeller.Order.Amount, currentSeller);
-                    results.Add(newOrder);
-
-                    currentPrice += currentSeller.Order.Amount * currentSeller.Order.Price;
-
-                    amountLeftToBuy -= currentSeller.Order.Amount;
-                }
-
-                budgetExceeded = userOrder.BalanceEur < currentPrice;
-
-                index++;
-            }
-
-            if (budgetExceeded)
-            {
-                return new ExchangeResult(new List<IOrderResult>(), 0, BUDGET_EXCEEDED_ERROR_MSG);
-            }
-
-            if (amountLeftToBuy != 0)
-            {
-                return new ExchangeResult(new List<IOrderResult>(), 0, NOT_ENOUGH_BTC_TO_BUY);
-            }
-
-            return new ExchangeResult(results, currentPrice, string.Empty);
+            return exchangeResult;
         }
 
         public async Task<IExchangeResult> SellOptimal(IUserOrder userOrder)
         {
             IList<Bid> buyers = await _dataSource.GetOrderedBuyers();
 
-            IList<IOrderResult> results = new List<IOrderResult>();
+            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalSellSequence(userOrder.Amount, userOrder.BalanceBTC, buyers);
 
-            int index = 0;
-            decimal amountLeftToSell = userOrder.Amount;
-            decimal currentPrice = 0;
-            while (amountLeftToSell != 0 && index < buyers.Count)
+            return exchangeResult;
+        }
+
+        public void FindOptimalSequencePerExchange(IList<OrderBook> orderBooks)
+        {
+            Random random = new();
+
+            foreach (OrderBook orderBook in orderBooks)
             {
-                Bid currentBuyer = buyers[index];
+                double balanceEur = (random.NextDouble() * 200000);
+                double balanceBtc = (random.NextDouble() * 30);
+                double amount = random.NextDouble() * 20;
 
-                if (amountLeftToSell <= currentBuyer.Order.Amount)
-                {
-                    IOrderResult newOrder = new OrderResult(amountLeftToSell, currentBuyer);
-                    results.Add(newOrder);
+                _outputWriter.OutputInitialValues(balanceEur, balanceBtc, amount);
 
-                    currentPrice += amountLeftToSell * currentBuyer.Order.Price;
+                IExchangeResult buyResult = _sequenceFinder.FindOptimalBuySequence((decimal)amount, (decimal)balanceEur, orderBook.Asks);
+                IExchangeResult sellResult = _sequenceFinder.FindOptimalSellSequence((decimal)amount, (decimal)balanceBtc, orderBook.Bids);
 
-                    amountLeftToSell = 0;
-                }
-                else
-                {
-                    IOrderResult newOrder = new OrderResult(currentBuyer.Order.Amount, currentBuyer);
-                    results.Add(newOrder);
-
-                    currentPrice += currentBuyer.Order.Amount * currentBuyer.Order.Price;
-
-                    amountLeftToSell -= currentBuyer.Order.Amount;
-                }
-
-                index++;
+                _outputWriter.OutputResultSequence(buyResult, sellResult);
             }
-
-            if (amountLeftToSell != 0)
-            {
-                return new ExchangeResult(new List<IOrderResult>(), 0, NOT_ENOUGH_BUYERS);
-            }
-
-            return new ExchangeResult(results, currentPrice, string.Empty);
         }
     }
 }

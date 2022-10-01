@@ -94,7 +94,7 @@ namespace MetaExchange.Tests.Logic.MetaExchangeLogicTests
 
             UserOrder = Mock.Of<IUserOrder>(i => i.Amount == 12.34M);
 
-            Sut = new MetaExchangeLogic(_dataSource.Object);
+            Sut = new MetaExchangeLogic(null, null, _dataSource.Object);
         }
 
         public void SetBuyerAmounts(decimal amountBuyer1, decimal amountBuyer2, decimal amountBuyer3)

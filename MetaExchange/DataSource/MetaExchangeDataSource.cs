@@ -9,11 +9,13 @@ namespace MetaExchange.DataSource
         private IList<Bid> _bids = new List<Bid>();
 
         private readonly IOrderBookReader _orderBookReader;
+        private readonly IOutputWriter _outputWriter;
         private readonly string _orderBookPath;
 
-        public MetaExchangeDataSource(IOrderBookReader orderBookReader, string orderBookPath)
+        public MetaExchangeDataSource(IOrderBookReader orderBookReader, IOutputWriter outputWriter, string orderBookPath)
         {
             _orderBookReader = orderBookReader;
+            _outputWriter = outputWriter;
             _orderBookPath = orderBookPath;
         }
 
@@ -35,7 +37,7 @@ namespace MetaExchange.DataSource
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occured while retrieving order book data. Exception message: {ex.Message}");
+                _outputWriter.OutputString($"Error occured while retrieving order book data. Exception message: {ex.Message}");
             }
         }
 

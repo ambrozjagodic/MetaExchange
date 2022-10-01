@@ -19,8 +19,9 @@ namespace MetaExchange
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddSingleton<IMetaExchangeLogic, MetaExchangeLogic>();
+            services.AddSingleton<ISequenceFinder, SequenceFinder>();
             services.AddSingleton<IWebAPIRequestValidation, WebAPIRequestValidation>();
-            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), path));
+            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new ConsoleWriter(), path));
         }
 
         public void Configure(IApplicationBuilder app)

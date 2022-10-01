@@ -107,6 +107,8 @@ namespace MetaExchange.Tests.Logic.MetaExchangeLogicTests
         public const string BUDGET_EXCEEDED_ERROR_MSG = "Budget exceeded.";
         public const string NOT_ENOUGH_BTC_TO_BUY = "Not enough BTC to buy.";
 
+        private readonly Mock<ISequenceFinder> _sequenceFinder;
+        private readonly Mock<IOutputWriter> _outputWriter;
         private readonly Mock<IMetaExchangeDataSource> _dataSource;
 
         public Ask Asker1 { get; private set; }
@@ -119,11 +121,13 @@ namespace MetaExchange.Tests.Logic.MetaExchangeLogicTests
 
         public BuyOptimalDriver()
         {
+            _sequenceFinder = new Mock<ISequenceFinder>();
+            _outputWriter = new Mock<IOutputWriter>();
             _dataSource = new Mock<IMetaExchangeDataSource>();
 
             UserOrder = Mock.Of<IUserOrder>(i => i.Amount == 12.34M && i.BalanceEur == 40000);
 
-            Sut = new MetaExchangeLogic(_dataSource.Object);
+            Sut = new MetaExchangeLogic(_sequenceFinder.Object, _outputWriter.Object, _dataSource.Object);
         }
 
         public void SetSellerAmounts(decimal amountSeller1, decimal amountSeller2, decimal amountSeller3)

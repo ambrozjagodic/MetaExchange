@@ -27,6 +27,17 @@ namespace MetaExchange.Tests.DataSource
         }
 
         [Fact]
+        public async Task GetOrderedBuyers_InitException_WriteOutputAndReturnEmpty()
+        {
+            SetInitException();
+
+            IList<Bid> result = await Sut.GetOrderedBuyers();
+
+            result.Should().BeEmpty();
+            VerifyOutputWriterCalled();
+        }
+
+        [Fact]
         public async Task GetOrderedSellers_Success_AsksInitializedAndReturned()
         {
             IList<Ask> result = await Sut.GetOrderedSellers();
@@ -43,11 +54,23 @@ namespace MetaExchange.Tests.DataSource
 
             result.Should().BeEquivalentTo(ExpectedAsks, i => i.WithStrictOrdering());
         }
+
+        [Fact]
+        public async Task GetOrderedSellers_InitException_WriteOutputAndReturnEmpty()
+        {
+            SetInitException();
+
+            IList<Ask> result = await Sut.GetOrderedSellers();
+
+            result.Should().BeEmpty();
+            VerifyOutputWriterCalled();
+        }
     }
 
     public class MetaExchangeDataSourceDriver
     {
         private readonly Mock<IOrderBookReader> _orderBookReader;
+        private readonly Mock<IOutputWriter> _outputWriter;
         private readonly string _orderBookPath;
 
         public IList<Bid> ExpectedBids { get; }
@@ -80,10 +103,22 @@ namespace MetaExchange.Tests.DataSource
                             .ReturnsAsync(orderBooks)
                             .ReturnsAsync(new List<OrderBook>());
 
+            _outputWriter = new Mock<IOutputWriter>();
+
             ExpectedBids = new List<Bid> { bid3, bid1, bid4, bid2 };
             ExpectedAsks = new List<Ask> { ask2, ask4, ask1, ask3 };
 
-            Sut = new MetaExchangeDataSource(_orderBookReader.Object, _orderBookPath);
+            Sut = new MetaExchangeDataSource(_orderBookReader.Object, _outputWriter.Object, _orderBookPath);
+        }
+
+        public void SetInitException()
+        {
+            _orderBookReader.Setup(i => i.ReadOrderBook(_orderBookPath)).ThrowsAsync(new Exception("test"));
+        }
+
+        public void VerifyOutputWriterCalled()
+        {
+            _outputWriter.Verify(i => i.OutputString(It.IsAny<string>()), Times.Once);
         }
     }
 }
