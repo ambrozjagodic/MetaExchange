@@ -3,14 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaExchange", "MetaExchange\MetaExchange.csproj", "{49A6A4B9-2A20-4252-887D-4DD93790C676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaExchange", "MetaExchange\MetaExchange.csproj", "{49A6A4B9-2A20-4252-887D-4DD93790C676}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5998C67A-4840-4A1F-814D-A09D43292AEB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaExchange.Tests", "MetaExchange.Tests\MetaExchange.Tests.csproj", "{1C22FB8F-4A52-4EC3-BD50-634BD0FA4B7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaExchange.Tests", "MetaExchange.Tests\MetaExchange.Tests.csproj", "{1C22FB8F-4A52-4EC3-BD50-634BD0FA4B7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaExchange.E2ETests", "MetaExchange.E2ETests\MetaExchange.E2ETests.csproj", "{EF47602E-E5B1-498B-BDFE-E0DC8757D2A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{1C22FB8F-4A52-4EC3-BD50-634BD0FA4B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C22FB8F-4A52-4EC3-BD50-634BD0FA4B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C22FB8F-4A52-4EC3-BD50-634BD0FA4B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF47602E-E5B1-498B-BDFE-E0DC8757D2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF47602E-E5B1-498B-BDFE-E0DC8757D2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF47602E-E5B1-498B-BDFE-E0DC8757D2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF47602E-E5B1-498B-BDFE-E0DC8757D2A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

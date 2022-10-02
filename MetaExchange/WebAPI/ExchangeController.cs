@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetaExchange.WebAPI
 {
+    [Route("api/exchange")]
     public class ExchangeController : ControllerBase
     {
         private readonly IMetaExchangeLogic _logic;
@@ -20,7 +21,6 @@ namespace MetaExchange.WebAPI
         }
 
         [HttpPost]
-        [Route("exchange")]
         public async Task<IActionResult> GetOptimalTransactions([FromBody] UserOrder userOrder)
         {
             try

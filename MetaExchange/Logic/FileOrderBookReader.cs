@@ -31,7 +31,10 @@ namespace MetaExchange.Logic
                 string orderStr = "{" + line.Split(new[] { '{' }, 2).Last();
 
                 OrderBook orderBook = JsonConvert.DeserializeObject<OrderBook>(orderStr);
-                orderBooks.Add(orderBook);
+                if (orderBook != null)
+                {
+                    orderBooks.Add(orderBook);
+                }
             }
 
             return orderBooks;
