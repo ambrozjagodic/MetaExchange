@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MetaExchange": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
