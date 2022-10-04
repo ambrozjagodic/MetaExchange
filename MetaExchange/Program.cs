@@ -39,20 +39,15 @@ public class Program
 
     private static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
     {
-        string environment = Environment.GetEnvironmentVariable("run-env");
-        string configFilePath = GetConfigFilePath(environment);
+        string configFilePath = GetConfigFilePath();
 
         config.SetBasePath(Environment.CurrentDirectory);
         config.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
     }
 
-    private static string GetConfigFilePath(string runEnvironment)
+    private static string GetConfigFilePath()
     {
         string projectDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
-        if (runEnvironment == "e2e-tests")
-        {
-            return $"{projectDirectory}/Config/Settings.E2ETests.json";
-        }
 
         return $"{projectDirectory}/Config/Settings.json";
     }

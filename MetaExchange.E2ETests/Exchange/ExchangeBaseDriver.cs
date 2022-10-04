@@ -1,6 +1,7 @@
 ﻿using MetaExchange.E2ETests.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 
 namespace MetaExchange.E2ETests.Exchange
 {
@@ -10,23 +11,23 @@ namespace MetaExchange.E2ETests.Exchange
 
         public ExchangeBaseDriver()
         {
-            Environment.SetEnvironmentVariable("run-env", "e2e-tests");
-
-            TestServer testServer = new TestServer(new WebHostBuilder().UseStartup<Startup>());
+            TestServer testServer = new TestServer(new WebHostBuilder().ConfigureAppConfiguration(ConfigConfiguration).UseStartup<Startup>());
             TestClient = testServer.CreateClient();
         }
 
-        public static Order CreateOrder(string type, decimal amount, decimal price)
+        private static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
         {
-            return new Order
-            {
-                Id = null,
-                Time = "0001-01-01T00:00:00",
-                Type = type,
-                Kind = "Limit",
-                Amount = amount,
-                Price = price
-            };
+            string configFilePath = GetConfigFilePath();
+
+            config.SetBasePath(Environment.CurrentDirectory);
+            config.AddJsonFile(configFilePath, optional: false, reloadOnChange: true);
+        }
+
+        private static string GetConfigFilePath()
+        {
+            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.Parent?.FullName;
+
+            return $"{projectDirectory}/MetaExchange/Config/Settings.E2ETests.json";
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MetaExchange.E2ETests.Exchange
         [Fact]
         public async Task Buy_Valid_ReturnsBuySequence()
         {
-            HttpRequestMessage request = CreateRequest(1.92M);
+            HttpRequestMessage request = CreateRequest(1.12M);
             ExchangeResult expected = CreateExpectedResult();
 
             HttpResponseMessage response = await TestClient.SendAsync(request);
@@ -19,7 +19,7 @@ namespace MetaExchange.E2ETests.Exchange
 
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             ExchangeResult exchangeResult = JsonConvert.DeserializeObject<ExchangeResult>(responseContent);
-            exchangeResult.Should().BeEquivalentTo(expected, i => i.Excluding(j => j.Id));
+            exchangeResult.Should().BeEquivalentTo(expected, i => i.WithStrictOrdering().Excluding(j => j.Id));
         }
     }
 
@@ -41,34 +41,47 @@ namespace MetaExchange.E2ETests.Exchange
             {
                 Success = true,
                 ErrorMsg = "",
-                TotalPrice = 5675.8129666M,
+                TotalPrice = 3320.00480M,
                 OrderResult = new List<OrderResult>
                 {
                     new OrderResult
                     {
-                        Amount = 1.18438M,
+                        Amount = 0.405M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 1.18438M, 2955.03M)
+                            Order = CreateOrder(0.405M, 2964.29M)
                         }
                     },
                     new OrderResult
                     {
-                        Amount = 0.406M,
+                        Amount = 0.405M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 0.406M, 2957.96M)
+                            Order = CreateOrder(0.405M, 2964.29M)
                         }
                     },
                     new OrderResult
                     {
-                        Amount = 0.32962M,
+                        Amount = 0.310M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 0.406M, 2957.96M)
+                            Order = CreateOrder(0.405M, 2964.29M)
                         }
                     }
                 }
+            };
+        }
+
+        public static Order CreateOrder(decimal amount, decimal price)
+        {
+            return new Order
+            {
+                Id = null,
+                Time = "0001-01-01T00:00:00",
+                Type = "Sell",
+                Kind = "Limit",
+                Amount = amount,
+                Price = price
             };
         }
     }
