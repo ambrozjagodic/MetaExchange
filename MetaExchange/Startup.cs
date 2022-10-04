@@ -1,9 +1,12 @@
-﻿using MetaExchange.DataSource;
+﻿using MetaExchange.Config;
+using MetaExchange.DataSource;
 using MetaExchange.Logic;
 using MetaExchange.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -12,15 +15,16 @@ namespace MetaExchange
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            string path = @"/Users/ambroz/Documents/Projects/MetaExchange/Data/Dataset/order_books_data";
-
-            string runEnvironment = Environment.GetEnvironmentVariable("run-env");
-            if (runEnvironment == "e2e-tests")
-            {
-                path = @"/Users/ambroz/Documents/Projects/MetaExchange/Data/Dataset/order_books_data_test";
-            }
+            string orderBookFilePath = _configuration.GetValue<string>(SettingsConsts.ORDER_BOOK_FILE_PATH);
 
             services.AddMvcCore();
             services.AddControllers().AddNewtonsoftJson();
@@ -29,7 +33,7 @@ namespace MetaExchange
             services.AddSingleton<ISequenceFinder, SequenceFinder>();
             services.AddSingleton<IOutputWriter, ConsoleWriter>();
             services.AddSingleton<IWebAPIRequestValidation, WebAPIRequestValidation>();
-            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new ConsoleWriter(), path));
+            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new ConsoleWriter(), orderBookFilePath));
         }
 
         public void Configure(IApplicationBuilder app)

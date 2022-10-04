@@ -1,0 +1,7 @@
+{
+  "Server": {
+    "Endpoint": "127.0.0.1",
+    "Port": 5014
+  },
+  "OrderBookFilePath": "/Users/ambroz/Documents/Projects/MetaExchange/Data/Dataset/order_books_data"
+}
