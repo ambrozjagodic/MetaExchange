@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MetaExchange
 {
@@ -13,7 +14,13 @@ namespace MetaExchange
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            string path = @"D:\Work\Private\MetaExchangeTask\metaExchangeTask_backend_slo\order_books_data";
+            string path = @"/Users/ambroz/Documents/Projects/MetaExchange/Data/Dataset/order_books_data";
+
+            string runEnvironment = Environment.GetEnvironmentVariable("run-env");
+            if (runEnvironment == "e2e-tests")
+            {
+                path = @"/Users/ambroz/Documents/Projects/MetaExchange/Data/Dataset/order_books_data_test";
+            }
 
             services.AddMvcCore();
             services.AddControllers().AddNewtonsoftJson();

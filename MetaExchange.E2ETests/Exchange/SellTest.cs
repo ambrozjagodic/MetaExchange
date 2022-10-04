@@ -1,19 +1,18 @@
-﻿using FluentAssertions;
-using MetaExchange.E2ETests.Core;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
+﻿using System;
+using FluentAssertions;
 using Newtonsoft.Json;
 using System.Net;
+using MetaExchange.E2ETests.Core;
 using System.Net.Http.Json;
 
 namespace MetaExchange.E2ETests.Exchange
 {
-    public class BuyTest : BuyDriver
+    public class SellTest : SellDriver
     {
         [Fact]
-        public async Task Buy_Valid_ReturnsBuySequence()
+        public async Task Sell_Valid_ReturnsSellSequence()
         {
-            HttpRequestMessage request = CreateRequest(1.92M);
+            HttpRequestMessage request = CreateRequest(0.03M);
             ExchangeResult expected = CreateExpectedResult();
 
             HttpResponseMessage response = await TestClient.SendAsync(request);
@@ -25,7 +24,7 @@ namespace MetaExchange.E2ETests.Exchange
         }
     }
 
-    public class BuyDriver : ExchangeBaseDriver
+    public class SellDriver : ExchangeBaseDriver
     {
         public static HttpRequestMessage CreateRequest(decimal amount)
         {
@@ -33,41 +32,41 @@ namespace MetaExchange.E2ETests.Exchange
             {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri("api/exchange", UriKind.Relative),
-                Content = JsonContent.Create(new UserOrder { Type = "Buy", Amount = amount, BalanceBTC = 2.931M, BalanceEur = 7892.31M })
+                Content = JsonContent.Create(new UserOrder { Type = "Sell", Amount = amount, BalanceBTC = 2.931M, BalanceEur = 7892.31M })
             };
         }
 
-        public static ExchangeResult CreateExpectedResult()
+        public ExchangeResult CreateExpectedResult()
         {
             return new ExchangeResult
             {
                 Success = true,
                 ErrorMsg = "",
-                TotalPrice = 5675.8129666M,
+                TotalPrice = 89.0085M,
                 OrderResult = new List<OrderResult>
                 {
                     new OrderResult
                     {
-                        Amount = 1.18438M,
+                        Amount = 0.01M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 1.18438M, 2955.03M)
+                            Order = CreateOrder("Buy", 0.01M, 2966.95M)
                         }
                     },
                     new OrderResult
                     {
-                        Amount = 0.406M,
+                        Amount = 0.01M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 0.406M, 2957.96M)
+                            Order = CreateOrder("Buy", 0.01M, 2966.95M)
                         }
                     },
                     new OrderResult
                     {
-                        Amount = 0.32962M,
+                        Amount = 0.01M,
                         Exchange = new ExchangeOrder
                         {
-                            Order = CreateOrder("Sell", 0.406M, 2957.96M)
+                            Order = CreateOrder("Buy", 0.01M, 2966.95M)
                         }
                     }
                 }
@@ -75,3 +74,4 @@ namespace MetaExchange.E2ETests.Exchange
         }
     }
 }
+
