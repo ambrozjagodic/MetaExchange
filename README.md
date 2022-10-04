@@ -16,6 +16,11 @@ To run in this mode, do not append argument when running the program. Example:
 
 `.\MetaExchange.exe` 
 
+## Notes:
+
+Currently, you do have to specify the path to the OrderBook file in the code. We are working on making it configurable in the config file.
+
+
 ## TODOs
 
 1. Configurable order book file path
