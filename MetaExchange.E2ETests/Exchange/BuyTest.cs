@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
 using MetaExchange.E2ETests.Core;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 [ExcludeFromCodeCoverage]
 public class Program

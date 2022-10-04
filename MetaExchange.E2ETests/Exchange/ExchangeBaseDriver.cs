@@ -1,5 +1,4 @@
-﻿using System;
-using MetaExchange.E2ETests.Core;
+﻿using MetaExchange.E2ETests.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 
@@ -11,7 +10,6 @@ namespace MetaExchange.E2ETests.Exchange
 
         public ExchangeBaseDriver()
         {
-            string value = Environment.GetEnvironmentVariable("run-env");
             Environment.SetEnvironmentVariable("run-env", "e2e-tests");
 
             TestServer testServer = new TestServer(new WebHostBuilder().UseStartup<Startup>());
@@ -32,4 +30,3 @@ namespace MetaExchange.E2ETests.Exchange
         }
     }
 }
-

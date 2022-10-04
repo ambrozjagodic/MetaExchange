@@ -1,8 +1,7 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
+using MetaExchange.E2ETests.Core;
 using Newtonsoft.Json;
 using System.Net;
-using MetaExchange.E2ETests.Core;
 using System.Net.Http.Json;
 
 namespace MetaExchange.E2ETests.Exchange
@@ -74,4 +73,3 @@ namespace MetaExchange.E2ETests.Exchange
         }
     }
 }
-

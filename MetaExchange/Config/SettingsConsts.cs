@@ -1,5 +1,4 @@
-﻿using System;
-namespace MetaExchange.Config
+﻿namespace MetaExchange.Config
 {
     public static class SettingsConsts
     {
