@@ -23,10 +23,10 @@ Currently, you do have to specify the path to the OrderBook file in the code. We
 
 ## TODOs
 
-1. Configurable order book file path
-2. Environmentally specific decimal separators
+1. Configurable order book file path [ DONE ]
+2. Culture specific decimal separators
 3. Improve logging and tracability
 4. Order book cache invalidation
 5. Persistant storage for API requests
-6. E2E test specific order books
+6. E2E test specific order books [ DONE ]
 7. E2E edge cases
