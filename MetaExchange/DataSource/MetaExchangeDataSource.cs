@@ -13,11 +13,15 @@ namespace MetaExchange.DataSource
         private readonly IOutputWriter _outputWriter;
         private readonly string _orderBookPath;
 
+        private readonly SemaphoreSlim _semaphore;
+
         public MetaExchangeDataSource(IOrderBookReader orderBookReader, IOutputWriter outputWriter, string orderBookPath)
         {
             _orderBookReader = orderBookReader;
             _outputWriter = outputWriter;
             _orderBookPath = orderBookPath;
+
+            _semaphore = new SemaphoreSlim(1, 1);
         }
 
         public async Task Init()
@@ -54,20 +58,28 @@ namespace MetaExchange.DataSource
 
         public async Task<IList<Bid>> GetOrderedBuyers()
         {
+            await _semaphore.WaitAsync();
+
             if (!_bids.Any())
             {
                 await Init();
             }
+
+            _semaphore.Release();
 
             return _bids;
         }
 
         public async Task<IList<Ask>> GetOrderedSellers()
         {
+            await _semaphore.WaitAsync();
+
             if (!_asks.Any())
             {
                 await Init();
             }
+
+            _semaphore.Release();
 
             return _asks;
         }
