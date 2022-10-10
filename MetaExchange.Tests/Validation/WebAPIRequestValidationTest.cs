@@ -27,32 +27,12 @@ namespace MetaExchange.Tests.Validation
             result.Should().Be("Invalid order type received.");
         }
 
-        [Fact]
-        public void ValidateUserOrder_BuyingWithNoMoney_ErrorMessageReturned()
-        {
-            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "buy" && i.BalanceEur == 0);
-
-            string result = Sut.ValidateUserOrder(userOrder);
-
-            result.Should().Be("Insufficient funds to purchase.");
-        }
-
-        [Fact]
-        public void ValidateUserOrder_SellingMoreThanOwning_ErrorMessageReturned()
-        {
-            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "sell" && i.BalanceBTC == 10 && i.Amount == 20);
-
-            string result = Sut.ValidateUserOrder(userOrder);
-
-            result.Should().Be("Insufficient funds to sell.");
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-20)]
         public void ValidateUserOrder_InvalidAmount_ErrorMessageReturned(decimal amount)
         {
-            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "buy" && i.BalanceEur == 20000 && i.Amount == amount);
+            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "buy" && i.Amount == amount);
 
             string result = Sut.ValidateUserOrder(userOrder);
 
@@ -62,7 +42,7 @@ namespace MetaExchange.Tests.Validation
         [Fact]
         public void ValidateUserOrder_ValidOrder_ReturnsEmptyString()
         {
-            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "buy" && i.BalanceEur == 20000 && i.Amount == 10);
+            IUserOrder userOrder = Mock.Of<IUserOrder>(i => i.Type == "buy" && i.Amount == 10);
 
             string result = Sut.ValidateUserOrder(userOrder);
 

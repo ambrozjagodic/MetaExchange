@@ -7,7 +7,7 @@ namespace MetaExchange.Tests.Logic.SequenceFinderTests
 {
     public class FindOptimalSellSequenceTest : FindOptimalSellSequenceDriver
     {
-        [Theory]
+        /*[Theory]
         [InlineData(15.26, 0.1, 18.2)] // first buyer leftover
         [InlineData(12.34, 0.2, 22.9)] // first buyer exactly the asked amount
         public void FindOptimalSellSequence_FirstBuyerEnough_ReturnsFirstBuyerData(decimal amountBuyer1, decimal amountBuyer2, decimal amountBuyer3)
@@ -84,7 +84,7 @@ namespace MetaExchange.Tests.Logic.SequenceFinderTests
             result.ErrorMsg.Should().Be(Consts.NOT_ENOUGH_BTC_TO_SELL);
             result.TotalPrice.Should().Be(0M);
             result.OrderResult.Should().BeEmpty();
-        }
+        }*/
     }
 
     public class FindOptimalSellSequenceDriver

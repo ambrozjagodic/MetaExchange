@@ -113,8 +113,8 @@ namespace MetaExchange.Tests.DataSource
 
             ExpectedOrderBooks = new List<OrderBook>
             {
-                new OrderBook("2022-01-01T00:00:00", new List<Bid> { bid1, bid2 }, new List<Ask> { ask1, ask2 } ),
-                new OrderBook("2022-01-02T00:00:00", new List<Bid> { bid3, bid4 }, new List<Ask> { ask3, ask4 } )
+                //new OrderBook("2022-01-01T00:00:00", new List<Bid> { bid1, bid2 }, new List<Ask> { ask1, ask2 } ),
+                //new OrderBook("2022-01-02T00:00:00", new List<Bid> { bid3, bid4 }, new List<Ask> { ask3, ask4 } )
             };
 
             _orderBookReader = new Mock<IOrderBookReader>();

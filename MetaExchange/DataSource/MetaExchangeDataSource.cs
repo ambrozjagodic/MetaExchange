@@ -56,6 +56,20 @@ namespace MetaExchange.DataSource
             return _orderBookReader.ReadNumberOfOrderBooks(_orderBookPath, numberOfBooks);
         }
 
+        public async Task<IList<OrderBook>> GetOrderBooks()
+        {
+            await _semaphore.WaitAsync();
+
+            if (!_bids.Any())
+            {
+                await Init();
+            }
+
+            _semaphore.Release();
+
+            return _orderBooks;
+        }
+
         public async Task<IList<Bid>> GetOrderedBuyers()
         {
             await _semaphore.WaitAsync();

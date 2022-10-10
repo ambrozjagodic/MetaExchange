@@ -2,10 +2,16 @@
 
 namespace MetaExchange.Logic
 {
-    public class SequenceFinder : ISequenceFinder
+    public class SequenceFinder2
     {
-        public IExchangeResult FindOptimalBuySequence(decimal amount, IList<Ask> asks)
+        public IExchangeResult FindOptimalBuySequence(decimal amount, IList<OrderBook> orderBooks)
         {
+            IDictionary<Guid, decimal> exchangeBalances = new Dictionary<Guid, decimal>();
+            orderBooks.SelectMany(i => i.Bids)
+                    .OrderByDescending(i => i.Order.Price)
+                    .ThenByDescending(i => i.Order.Amount)
+                    .ToList();
+
             IList<IOrderResult> results = new List<IOrderResult>();
 
             bool budgetExceeded = false;
@@ -53,7 +59,7 @@ namespace MetaExchange.Logic
             return new ExchangeResult(results, currentPrice, string.Empty);
         }
 
-        public IExchangeResult FindOptimalSellSequence(decimal amount, IList<Bid> bids)
+        /*public IExchangeResult FindOptimalSellSequence(decimal amount, IList<Bid> bids)
         {
             //if (balanceBtc < amount)
             //{
@@ -97,6 +103,6 @@ namespace MetaExchange.Logic
             }
 
             return new ExchangeResult(results, currentPrice, string.Empty);
-        }
+        }*/
     }
 }

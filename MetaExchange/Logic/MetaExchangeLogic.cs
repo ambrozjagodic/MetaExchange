@@ -20,7 +20,7 @@ namespace MetaExchange.Logic
         {
             IList<Ask> sellers = await _dataSource.GetOrderedSellers();
 
-            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalBuySequence(userOrder.Amount, userOrder.BalanceEur, sellers);
+            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalBuySequence(userOrder.Amount, sellers);
 
             return exchangeResult;
         }
@@ -29,7 +29,7 @@ namespace MetaExchange.Logic
         {
             IList<Bid> buyers = await _dataSource.GetOrderedBuyers();
 
-            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalSellSequence(userOrder.Amount, userOrder.BalanceBTC, buyers);
+            IExchangeResult exchangeResult = _sequenceFinder.FindOptimalSellSequence(userOrder.Amount, buyers);
 
             return exchangeResult;
         }
@@ -48,8 +48,8 @@ namespace MetaExchange.Logic
 
                 _outputWriter.OutputInitialValues(balanceEur, balanceBtc, amount);
 
-                IExchangeResult buyResult = _sequenceFinder.FindOptimalBuySequence((decimal)amount, (decimal)balanceEur, orderBook.Asks);
-                IExchangeResult sellResult = _sequenceFinder.FindOptimalSellSequence((decimal)amount, (decimal)balanceBtc, orderBook.Bids);
+                IExchangeResult buyResult = _sequenceFinder.FindOptimalBuySequence((decimal)amount, orderBook.Asks);
+                IExchangeResult sellResult = _sequenceFinder.FindOptimalSellSequence((decimal)amount, orderBook.Bids);
 
                 _outputWriter.OutputResultSequence(buyResult, sellResult);
             }

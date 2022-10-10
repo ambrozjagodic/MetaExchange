@@ -58,8 +58,8 @@ namespace MetaExchange.Tests.Logic
         public MetaExchangeLogicDriver()
         {
             NumberOfOrderBooks = 2;
-            BuyOrder = Mock.Of<IUserOrder>(i => i.Amount == 10 && i.BalanceEur == 1000);
-            SellOrder = Mock.Of<IUserOrder>(i => i.Amount == 20 && i.BalanceBTC == 2000);
+            BuyOrder = Mock.Of<IUserOrder>(i => i.Amount == 10/* && i.BalanceEur == 1000*/);
+            SellOrder = Mock.Of<IUserOrder>(i => i.Amount == 20/* && i.BalanceBTC == 2000*/);
             ExpectedBuyResult = Mock.Of<IExchangeResult>();
             ExpectedSellResult = Mock.Of<IExchangeResult>();
 
@@ -70,8 +70,8 @@ namespace MetaExchange.Tests.Logic
             _dataSource.Setup(i => i.GetOrderedBuyers()).ReturnsAsync(buyers);
 
             _sequenceFinder = new Mock<ISequenceFinder>();
-            _sequenceFinder.Setup(i => i.FindOptimalBuySequence(10, 1000, sellers)).Returns(ExpectedBuyResult);
-            _sequenceFinder.Setup(i => i.FindOptimalSellSequence(20, 2000, buyers)).Returns(ExpectedSellResult);
+            //_sequenceFinder.Setup(i => i.FindOptimalBuySequence(10, 1000, sellers)).Returns(ExpectedBuyResult);
+            //_sequenceFinder.Setup(i => i.FindOptimalSellSequence(20, 2000, buyers)).Returns(ExpectedSellResult);
 
             _outputWriter = new Mock<IOutputWriter>();
 
@@ -81,8 +81,8 @@ namespace MetaExchange.Tests.Logic
             List<Ask> asks2 = new() { new Ask(), new Ask() };
             IList<OrderBook> orderBooks = new List<OrderBook>
             {
-                new OrderBook("2022-01-01T00:00:00", bids1, asks1),
-                new OrderBook("2022-01-01T00:00:00", bids2, asks2)
+                //new OrderBook("2022-01-01T00:00:00", bids1, asks1),
+                //new OrderBook("2022-01-01T00:00:00", bids2, asks2)
             };
 
             _dataSource.Setup(i => i.GetLastNumberOfOrderBooks(NumberOfOrderBooks)).Returns(orderBooks);
@@ -91,10 +91,10 @@ namespace MetaExchange.Tests.Logic
             _buyResult2 = Mock.Of<IExchangeResult>();
             _sellResult1 = Mock.Of<IExchangeResult>();
             _sellResult2 = Mock.Of<IExchangeResult>();
-            _sequenceFinder.Setup(i => i.FindOptimalBuySequence(It.IsAny<decimal>(), It.IsAny<decimal>(), asks1)).Returns(_buyResult1);
-            _sequenceFinder.Setup(i => i.FindOptimalBuySequence(It.IsAny<decimal>(), It.IsAny<decimal>(), asks2)).Returns(_buyResult2);
-            _sequenceFinder.Setup(i => i.FindOptimalSellSequence(It.IsAny<decimal>(), It.IsAny<decimal>(), bids1)).Returns(_sellResult1);
-            _sequenceFinder.Setup(i => i.FindOptimalSellSequence(It.IsAny<decimal>(), It.IsAny<decimal>(), bids2)).Returns(_sellResult2);
+            //_sequenceFinder.Setup(i => i.FindOptimalBuySequence(It.IsAny<decimal>(), It.IsAny<decimal>(), asks1)).Returns(_buyResult1);
+            //_sequenceFinder.Setup(i => i.FindOptimalBuySequence(It.IsAny<decimal>(), It.IsAny<decimal>(), asks2)).Returns(_buyResult2);
+            //_sequenceFinder.Setup(i => i.FindOptimalSellSequence(It.IsAny<decimal>(), It.IsAny<decimal>(), bids1)).Returns(_sellResult1);
+            //_sequenceFinder.Setup(i => i.FindOptimalSellSequence(It.IsAny<decimal>(), It.IsAny<decimal>(), bids2)).Returns(_sellResult2);
 
             Sut = new MetaExchangeLogic(_sequenceFinder.Object, _outputWriter.Object, _dataSource.Object);
         }
