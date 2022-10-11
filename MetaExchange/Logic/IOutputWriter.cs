@@ -4,9 +4,7 @@ namespace MetaExchange.Logic
 {
     public interface IOutputWriter
     {
-        void OutputInitialValues(double balanceEur, double balanceBtc, double amount);
-
-        void OutputResultSequence(IExchangeResult buyResult, IExchangeResult sellResult);
+        void OutputResultSequence(IExchangeResult result);
 
         void OutputString(string toOutput);
     }

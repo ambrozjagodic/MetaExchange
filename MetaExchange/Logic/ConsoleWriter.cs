@@ -7,40 +7,12 @@ namespace MetaExchange.Logic
     [ExcludeFromCodeCoverage]
     public class ConsoleWriter : IOutputWriter
     {
-        public void OutputInitialValues(double balanceEur, double balanceBtc, double amount)
+        public void OutputResultSequence(IExchangeResult result)
         {
-            Console.WriteLine("###############################################################################################################");
-            Console.WriteLine("###############################################################################################################");
-            Console.WriteLine("###############################################################################################################");
-            Console.WriteLine("###############################################################################################################");
-            Console.WriteLine("###############################################################################################################");
+            Console.WriteLine("Results:");
             Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine($"Processing input: \n\tBalanceEur={balanceEur};\n\tBalanceBTC={balanceBtc};\n\tAmount={amount};");
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-        }
-
-        public void OutputResultSequence(IExchangeResult buyResult, IExchangeResult sellResult)
-        {
-            Console.WriteLine("Buy results:");
-            Console.WriteLine();
-            string buyResultStr = JsonConvert.SerializeObject(buyResult);
+            string buyResultStr = JsonConvert.SerializeObject(result);
             Console.WriteLine(buyResultStr);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("Sell results:");
-            Console.WriteLine();
-            string sellResultStr = JsonConvert.SerializeObject(sellResult);
-            Console.WriteLine(sellResultStr);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
         }
