@@ -5,7 +5,7 @@ namespace MetaExchange.Core
     [ExcludeFromCodeCoverage]
     public class Order
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public string Time { get; set; }
         public string Type { get; set; }
         public string Kind { get; set; }

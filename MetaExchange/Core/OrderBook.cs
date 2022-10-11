@@ -1,9 +1,13 @@
-﻿namespace MetaExchange.Core
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace MetaExchange.Core
 {
+    [ExcludeFromCodeCoverage]
     public class OrderBook
     {
-        public OrderBook(string acqTime, decimal balanceEur, decimal balanceBtc, List<Bid> bids, List<Ask> asks)
+        public OrderBook(Guid id, string acqTime, decimal balanceEur, decimal balanceBtc, List<Bid> bids, List<Ask> asks)
         {
+            Id = id;
             AcqTime = DateTimeOffset.Parse(acqTime);
             BalanceEur = balanceEur;
             BalanceBtc = balanceBtc;
@@ -11,6 +15,7 @@
             Asks = asks;
         }
 
+        public Guid Id { get; set; }
         public DateTimeOffset AcqTime { get; set; }
         public decimal BalanceEur { get; set; }
         public decimal BalanceBtc { get; set; }

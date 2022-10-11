@@ -9,91 +9,73 @@ namespace MetaExchange.Tests.DataSource
     public class MetaExchangeDataSourceTest : MetaExchangeDataSourceDriver
     {
         [Fact]
-        public async Task GetOrderedBuyers_Success_BidsInitializedAndReturned()
+        public async Task GetBuyersData_Success_InitializedAndBuyerDataReturned()
         {
-            IList<Bid> result = await Sut.GetOrderedBuyers();
+            IOrderBookBuyerData result = await Sut.GetBuyersData();
 
-            result.Should().BeEquivalentTo(ExpectedBids, i => i.WithStrictOrdering());
+            result.Should().Be(ExpectedBuyerData);
         }
 
         [Fact]
-        public async Task GetOrderedBuyers_AlreadyInitialized_InitCalledOnceAndBidsReturned()
+        public async Task GetBuyersData_AlreadyInitialized_InitCalledOnceAndBuyerDataReturned()
         {
             await Sut.Init();
 
-            IList<Bid> result = await Sut.GetOrderedBuyers();
+            IOrderBookBuyerData result = await Sut.GetBuyersData();
 
-            result.Should().BeEquivalentTo(ExpectedBids, i => i.WithStrictOrdering());
+            result.Should().Be(ExpectedBuyerData);
         }
 
         [Fact]
-        public async Task GetOrderedBuyers_InitException_WriteOutputAndReturnEmpty()
+        public async Task GetBuyersData_InitException_WriteOutputAndReturnNull()
         {
             SetInitException();
 
-            IList<Bid> result = await Sut.GetOrderedBuyers();
+            IOrderBookBuyerData result = await Sut.GetBuyersData();
 
-            result.Should().BeEmpty();
+            result.Should().BeNull();
             VerifyOutputWriterCalled();
         }
 
         [Fact]
-        public async Task GetOrderedSellers_Success_AsksInitializedAndReturned()
+        public async Task GetSellersData_Success_InitializedAndSellerDataReturned()
         {
-            IList<Ask> result = await Sut.GetOrderedSellers();
+            IOrderBookSellerData result = await Sut.GetSellersData();
 
-            result.Should().BeEquivalentTo(ExpectedAsks, i => i.WithStrictOrdering());
+            result.Should().Be(ExpectedSellerData);
         }
 
         [Fact]
-        public async Task GetOrderedSellers_AlreadyInitialized_InitCalledOnceAndBidsReturned()
+        public async Task GetSellersData_AlreadyInitialized_InitCalledOnceAndSellerDataReturned()
         {
             await Sut.Init();
 
-            IList<Ask> result = await Sut.GetOrderedSellers();
+            IOrderBookSellerData result = await Sut.GetSellersData();
 
-            result.Should().BeEquivalentTo(ExpectedAsks, i => i.WithStrictOrdering());
+            result.Should().Be(ExpectedSellerData);
         }
 
         [Fact]
-        public async Task GetOrderedSellers_InitException_WriteOutputAndReturnEmpty()
+        public async Task GetSellersData_InitException_WriteOutputAndReturnNull()
         {
             SetInitException();
 
-            IList<Ask> result = await Sut.GetOrderedSellers();
+            IOrderBookSellerData result = await Sut.GetSellersData();
 
-            result.Should().BeEmpty();
+            result.Should().BeNull();
             VerifyOutputWriterCalled();
-        }
-
-        [Fact]
-        public async Task GetLastNumberOfOrderBooks_Existing_TakesLastOneFromCache()
-        {
-            await Sut.Init();
-
-            IList<OrderBook> result = Sut.GetLastNumberOfOrderBooks(1);
-
-            result.Should().BeEquivalentTo(new List<OrderBook> { ExpectedOrderBooks[1] });
-        }
-
-        [Fact]
-        public void GetLastNumberOfOrderBooks_NoBooksInCache_TakesFromStorage()
-        {
-            IList<OrderBook> result = Sut.GetLastNumberOfOrderBooks(2);
-
-            result.Should().BeEquivalentTo(ExpectedOrderBooks);
         }
     }
 
     public class MetaExchangeDataSourceDriver
     {
         private readonly Mock<IOrderBookReader> _orderBookReader;
+        private readonly Mock<IOrderBookDataFactory> _orderBookDataFactory;
         private readonly Mock<IOutputWriter> _outputWriter;
         private readonly string _orderBookPath;
 
-        public IList<Bid> ExpectedBids { get; }
-        public IList<Ask> ExpectedAsks { get; }
-        public IList<OrderBook> ExpectedOrderBooks { get; }
+        public IOrderBookBuyerData ExpectedBuyerData { get; }
+        public IOrderBookSellerData ExpectedSellerData { get; }
 
         public IMetaExchangeDataSource Sut { get; }
 
@@ -101,35 +83,32 @@ namespace MetaExchange.Tests.DataSource
         {
             _orderBookPath = "somePath";
 
-            Bid bid1 = new() { Order = new Order { Price = 10, Amount = 10 } };
-            Bid bid2 = new() { Order = new Order { Price = 10, Amount = 1 } };
-            Bid bid3 = new() { Order = new Order { Price = 20, Amount = 1 } };
-            Bid bid4 = new() { Order = new Order { Price = 10, Amount = 5 } };
-
-            Ask ask1 = new() { Order = new Order { Price = 20, Amount = 2 } };
-            Ask ask2 = new() { Order = new Order { Price = 10, Amount = 1 } };
-            Ask ask3 = new() { Order = new Order { Price = 30, Amount = 1 } };
-            Ask ask4 = new() { Order = new Order { Price = 20, Amount = 10 } };
-
-            ExpectedOrderBooks = new List<OrderBook>
+            IList<OrderBook> orderBooks = new List<OrderBook>
             {
-                //new OrderBook("2022-01-01T00:00:00", new List<Bid> { bid1, bid2 }, new List<Ask> { ask1, ask2 } ),
-                //new OrderBook("2022-01-02T00:00:00", new List<Bid> { bid3, bid4 }, new List<Ask> { ask3, ask4 } )
+                CreateOrderBook(),
+                CreateOrderBook()
             };
 
             _orderBookReader = new Mock<IOrderBookReader>();
             _orderBookReader.SetupSequence(i => i.ReadOrderBook(_orderBookPath))
-                            .ReturnsAsync(ExpectedOrderBooks)
+                            .ReturnsAsync(orderBooks)
                             .ReturnsAsync(new List<OrderBook>());
-
-            _orderBookReader.Setup(i => i.ReadNumberOfOrderBooks(_orderBookPath, 2)).Returns(ExpectedOrderBooks);
 
             _outputWriter = new Mock<IOutputWriter>();
 
-            ExpectedBids = new List<Bid> { bid3, bid1, bid4, bid2 };
-            ExpectedAsks = new List<Ask> { ask2, ask4, ask1, ask3 };
+            ExpectedBuyerData = Mock.Of<IOrderBookBuyerData>();
+            ExpectedSellerData = Mock.Of<IOrderBookSellerData>();
 
-            Sut = new MetaExchangeDataSource(_orderBookReader.Object, _outputWriter.Object, _orderBookPath);
+            IOrderBookData orderBookData = Mock.Of<IOrderBookData>(i => i.BuyerData == ExpectedBuyerData && i.SellerData == ExpectedSellerData);
+            _orderBookDataFactory = new Mock<IOrderBookDataFactory>();
+            _orderBookDataFactory.Setup(i => i.Create(orderBooks)).Returns(orderBookData);
+
+            Sut = new MetaExchangeDataSource(_orderBookReader.Object, _orderBookDataFactory.Object, _outputWriter.Object, _orderBookPath);
+        }
+
+        private static OrderBook CreateOrderBook()
+        {
+            return new OrderBook(Guid.NewGuid(), "2022-01-01T00:00:00", 1111, 11, new List<Bid> { new Bid(), new Bid() }, new List<Ask> { new Ask(), new Ask() });
         }
 
         public void SetInitException()

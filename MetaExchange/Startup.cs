@@ -1,4 +1,5 @@
 ﻿using MetaExchange.Config;
+using MetaExchange.Core;
 using MetaExchange.DataSource;
 using MetaExchange.Logic;
 using MetaExchange.Validation;
@@ -29,9 +30,10 @@ namespace MetaExchange
 
             services.AddSingleton<IMetaExchangeLogic, MetaExchangeLogic>();
             services.AddSingleton<ISequenceFinder, SequenceFinder>();
+            services.AddSingleton<ISequenceFinderHelper, SequenceFinderHelper>();
             services.AddSingleton<IOutputWriter, ConsoleWriter>();
             services.AddSingleton<IWebAPIRequestValidation, WebAPIRequestValidation>();
-            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new ConsoleWriter(), orderBookFilePath));
+            services.AddSingleton<IMetaExchangeDataSource>(new MetaExchangeDataSource(new FileOrderBookReader(), new OrderBookDataFactory(), new ConsoleWriter(), orderBookFilePath));
         }
 
         public void Configure(IApplicationBuilder app)

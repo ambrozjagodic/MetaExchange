@@ -6,5 +6,6 @@
         public const string NOT_ENOUGH_BTC_TO_BUY = "Not enough BTC to buy.";
         public const string NOT_ENOUGH_BTC_TO_SELL = "Not enough BTC to sell.";
         public const string NOT_ENOUGH_BUYERS = "Not enough BTC buyers.";
+        public const string ORDER_BOOK_ERROR = "Order book error occured.";
     }
 }

@@ -17,12 +17,12 @@ public class Program
             {
                 string filePath = @"D:\Work\Private\MetaExchangeTask\metaExchangeTask_backend_slo\order_books_data";
 
-                ISequenceFinder sequenceFinder = new SequenceFinder();
+                ISequenceFinder sequenceFinder = new SequenceFinder(new SequenceFinderHelper());
                 IOutputWriter consoleWriter = new ConsoleWriter();
-                IMetaExchangeDataSource dataSource = new MetaExchangeDataSource(new FileOrderBookReader(), consoleWriter, filePath);
+                IMetaExchangeDataSource dataSource = null;// new MetaExchangeDataSource(new FileOrderBookReader(), consoleWriter, filePath);
 
-                IMetaExchangeLogic metaExchangeLogic = new MetaExchangeLogic(sequenceFinder, consoleWriter, dataSource);
-                metaExchangeLogic.FindOptimalSequencePerExchange(numberOfOrderBooks);
+                IMetaExchangeLogic metaExchangeLogic = null;// new MetaExchangeLogic(sequenceFinder, consoleWriter, dataSource);
+                //metaExchangeLogic.FindOptimalSequencePerExchange(numberOfOrderBooks);
             }
         }
         else

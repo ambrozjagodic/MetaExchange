@@ -1,5 +1,8 @@
-﻿namespace MetaExchange.Core
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace MetaExchange.Core
 {
+    [ExcludeFromCodeCoverage]
     public class ExchangeResult : IExchangeResult
     {
         public ExchangeResult(IList<IOrderResult> orderResult, decimal totalPrice, string errorMsg)

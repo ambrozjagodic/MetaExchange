@@ -4,8 +4,8 @@ namespace MetaExchange.Logic
 {
     public interface ISequenceFinder
     {
-        IExchangeResult FindOptimalBuySequence(decimal amount, IList<Ask> sellers);
+        IExchangeResult FindOptimalBuySequence(decimal amount, IOrderBookSellerData sellerData);
 
-        IExchangeResult FindOptimalSellSequence(decimal amount, IList<Bid> bids);
+        IExchangeResult FindOptimalSellSequence(decimal amount, IOrderBookBuyerData buyerData);
     }
 }

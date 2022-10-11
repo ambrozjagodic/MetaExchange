@@ -4,45 +4,48 @@ namespace MetaExchange.Logic
 {
     public class SequenceFinder : ISequenceFinder
     {
-        public IExchangeResult FindOptimalBuySequence(decimal amount, IList<Ask> asks)
+        private readonly ISequenceFinderHelper _helper;
+
+        public SequenceFinder(ISequenceFinderHelper helper)
+        {
+            _helper = helper;
+        }
+
+        public IExchangeResult FindOptimalBuySequence(decimal amount, IOrderBookSellerData sellerData)
         {
             IList<IOrderResult> results = new List<IOrderResult>();
 
-            bool budgetExceeded = false;
+            IDictionary<Guid, decimal> exchangeBalances = new Dictionary<Guid, decimal>();
+
             int index = 0;
             decimal amountLeftToBuy = amount;
             decimal currentPrice = 0;
-            while (amountLeftToBuy != 0 && !budgetExceeded && index < asks.Count)
+            while (amountLeftToBuy != 0 && index < sellerData.Sellers.Count)
             {
-                Ask currentSeller = asks[index];
+                Ask currentSeller = sellerData.Sellers[index];
 
-                if (amountLeftToBuy <= currentSeller.Order.Amount)
+                Guid exchangeId = sellerData.ExchangeSellerMappings[currentSeller.Order.Id];
+
+                if (!exchangeBalances.TryGetValue(exchangeId, out decimal exchangeBalanceEur))
                 {
-                    IOrderResult newOrder = new OrderResult(amountLeftToBuy, currentSeller);
-                    results.Add(newOrder);
+                    exchangeBalanceEur = sellerData.ExchangeBalanceEur[exchangeId];
 
-                    currentPrice += amountLeftToBuy * currentSeller.Order.Price;
-
-                    amountLeftToBuy = 0;
-                }
-                else
-                {
-                    IOrderResult newOrder = new OrderResult(currentSeller.Order.Amount, currentSeller);
-                    results.Add(newOrder);
-
-                    currentPrice += currentSeller.Order.Amount * currentSeller.Order.Price;
-
-                    amountLeftToBuy -= currentSeller.Order.Amount;
+                    exchangeBalances.Add(exchangeId, exchangeBalanceEur);
                 }
 
-                //budgetExceeded = balanceEur < currentPrice;
+                decimal buyAmount = _helper.GetBuyAmount(amountLeftToBuy, currentSeller, exchangeBalanceEur);
+                if (buyAmount != 0)
+                {
+                    IOrderResult newOrder = new OrderResult(buyAmount, exchangeId, currentSeller);
+                    results.Add(newOrder);
+
+                    currentPrice += buyAmount * currentSeller.Order.Price;
+                    amountLeftToBuy -= buyAmount;
+
+                    exchangeBalances[exchangeId] -= buyAmount * currentSeller.Order.Price;
+                }
 
                 index++;
-            }
-
-            if (budgetExceeded)
-            {
-                return new ExchangeResult(new List<IOrderResult>(), 0, Consts.BUDGET_EXCEEDED_ERROR_MSG);
             }
 
             if (amountLeftToBuy != 0)
@@ -53,39 +56,38 @@ namespace MetaExchange.Logic
             return new ExchangeResult(results, currentPrice, string.Empty);
         }
 
-        public IExchangeResult FindOptimalSellSequence(decimal amount, IList<Bid> bids)
+        public IExchangeResult FindOptimalSellSequence(decimal amount, IOrderBookBuyerData buyerData)
         {
-            //if (balanceBtc < amount)
-            //{
-            //    return new ExchangeResult(new List<IOrderResult>(), 0, Consts.NOT_ENOUGH_BTC_TO_SELL);
-            //}
-
             IList<IOrderResult> results = new List<IOrderResult>();
+
+            IDictionary<Guid, decimal> exchangeBalances = new Dictionary<Guid, decimal>();
 
             int index = 0;
             decimal amountLeftToSell = amount;
             decimal currentPrice = 0;
-            while (amountLeftToSell != 0 && index < bids.Count)
+            while (amountLeftToSell != 0 && index < buyerData.Buyers.Count)
             {
-                Bid currentBuyer = bids[index];
+                Bid currentBuyer = buyerData.Buyers[index];
 
-                if (amountLeftToSell <= currentBuyer.Order.Amount)
+                Guid exchangeId = buyerData.ExchangeBuyerMappings[currentBuyer.Order.Id];
+
+                if (!exchangeBalances.TryGetValue(exchangeId, out decimal exchangeBalanceBtc))
                 {
-                    IOrderResult newOrder = new OrderResult(amountLeftToSell, currentBuyer);
-                    results.Add(newOrder);
+                    exchangeBalanceBtc = buyerData.ExchangeBalanceBtc[exchangeId];
 
-                    currentPrice += amountLeftToSell * currentBuyer.Order.Price;
-
-                    amountLeftToSell = 0;
+                    exchangeBalances.Add(exchangeId, exchangeBalanceBtc);
                 }
-                else
+
+                decimal sellAmount = _helper.GetSellAmount(amountLeftToSell, currentBuyer, exchangeBalanceBtc);
+                if (sellAmount != 0)
                 {
-                    IOrderResult newOrder = new OrderResult(currentBuyer.Order.Amount, currentBuyer);
+                    IOrderResult newOrder = new OrderResult(sellAmount, exchangeId, currentBuyer);
                     results.Add(newOrder);
 
-                    currentPrice += currentBuyer.Order.Amount * currentBuyer.Order.Price;
+                    currentPrice += sellAmount * currentBuyer.Order.Price;
+                    amountLeftToSell -= sellAmount;
 
-                    amountLeftToSell -= currentBuyer.Order.Amount;
+                    exchangeBalances[exchangeId] -= sellAmount;
                 }
 
                 index++;
@@ -93,7 +95,7 @@ namespace MetaExchange.Logic
 
             if (amountLeftToSell != 0)
             {
-                return new ExchangeResult(new List<IOrderResult>(), 0, Consts.NOT_ENOUGH_BUYERS);
+                return new ExchangeResult(new List<IOrderResult>(), 0, Consts.NOT_ENOUGH_BTC_TO_SELL);
             }
 
             return new ExchangeResult(results, currentPrice, string.Empty);

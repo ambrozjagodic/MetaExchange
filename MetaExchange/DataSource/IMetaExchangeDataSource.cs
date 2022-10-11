@@ -6,11 +6,8 @@ namespace MetaExchange.DataSource
     {
         Task Init();
 
-        IList<OrderBook> GetLastNumberOfOrderBooks(int numberOfBooks);
-        Task<IList<OrderBook>> GetOrderBooks();
+        Task<IOrderBookBuyerData> GetBuyersData();
 
-        Task<IList<Bid>> GetOrderedBuyers();
-
-        Task<IList<Ask>> GetOrderedSellers();
+        Task<IOrderBookSellerData> GetSellersData();
     }
 }

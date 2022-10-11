@@ -14,15 +14,6 @@ namespace MetaExchange.Logic
             return orders;
         }
 
-        public IList<OrderBook> ReadNumberOfOrderBooks(string path, int numberOfOrderBooks)
-        {
-            IList<string> lines = File.ReadLines(path).Take(numberOfOrderBooks).ToList();
-
-            IList<OrderBook> orders = ParseLines(lines);
-
-            return orders;
-        }
-
         private static IList<OrderBook> ParseLines(IList<string> lines)
         {
             IList<OrderBook> orderBooks = new List<OrderBook>();
