@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5a01a00c-fbbe-4c4c-8a54-9fcb1a0f6aa5",
+		"_postman_id": "2a1d32cc-6a56-488e-8d90-fa100ee59fd9",
 		"name": "MetaExchange",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"type\": \"buy\",\r\n\t\"amount\": 2,\r\n    \"balanceEur\": 100000,\r\n    \"balanceBtc\": 17\r\n}",
+					"raw": "{\r\n\t\"type\": \"buy\",\r\n\t\"amount\": 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"type\": \"sell\",\r\n\t\"amount\": 2,\r\n    \"balanceEur\": 100000,\r\n    \"balanceBtc\": 17\r\n}",
+					"raw": "{\r\n\t\"type\": \"sell\",\r\n\t\"amount\": 0.1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
