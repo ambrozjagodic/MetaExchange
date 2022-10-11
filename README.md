@@ -3,18 +3,23 @@
 ## Introduction
 
 **Two implementations:**
-1. **From console**: run the program file with argument *<int>* - number of order books to check for solutions. Random amount and balance are generated and optimal solution search is performed for each order book separately. Both buy and sell options are executed on all order books. 
+1. **From console**: run the program file with argument *-consoleapp* and [string] - type of order to execute (buy or sell) and [decimal] - amount of btc to buy or sell. Order is executed over the whole dataset provided in configuration file to find the optimal sequence.
 
-Example which takes 10 latest order books:
-`.\MetaExchange.exe 10` 
+Example for buying and selling 2.3 btc:
+`.\MetaExchange.exe -consoleapp buy 2.3` or
+`.\MetaExchange.exe -consoleapp sell 2.3` 
 
-2. **WebAPI**: HTTP POST request with payload, which contains the type of exchange (buy or sell), amount of BTC to buy or sell and user balances (in EUR and BTC). This implementation will find an optimal solution across the whole dataset of orderbooks (combinations of orderbooks are possible).
+2. **WebAPI**: HTTP POST request with payload, which contains the type of exchange (buy or sell) and amount of BTC to buy or sell. This implementation will find an optimal solution across the whole dataset provided in configuration file.
 
 Example postman collection is appended in `.\Data\PostmanCollections`. 
 
-To run in this mode, do not append argument when running the program. Example:
+To run in this mode, append argument *-webapp* when running the program. Example:
 
-`.\MetaExchange.exe` 
+`.\MetaExchange.exe -webapp` 
+
+## Notes
+
+Use `-help` for help.
 
 
 ## TODOs
